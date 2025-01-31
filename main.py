@@ -16,12 +16,28 @@ def read_csv():
     return products
 
 
-def create_pdf(products):
-    c = canvas.Canvas("output.pdf", pagesize=letter)
-    c.drawString(100, 750, "Test")
+def create_price_list(products):
+    c = canvas.Canvas("Price List.pdf", pagesize=letter)
+
+    product_per_page = 70
+
+    for i in range(len(products)):
+        product = products[i]
+        j = i % product_per_page
+
+        if j == 0:
+            if i != 0:
+                c.showPage()
+
+            c.drawString(100, 750, "Product Name")
+            c.drawString(500, 750, "Price")
+
+        c.drawString(100, 730 - 10 * j, product[0])
+        c.drawString(500, 730 - 10 * j, product[1])
+
     c.save()
 
 
 products = read_csv()
-print(products)
-create_pdf()
+
+create_price_list(products)
