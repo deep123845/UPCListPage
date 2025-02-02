@@ -1,6 +1,8 @@
 import csv
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+import barcode
+from barcode.writer import ImageWriter
 
 
 def read_csv():
@@ -9,11 +11,18 @@ def read_csv():
     with open("data.csv", "r") as file:
         reader = csv.reader(file)
         for row in reader:
-            products.append([row[1], row[9]])
+            products.append([row[1], row[9], row[11]])
 
     products.pop(0)
 
     return products
+
+
+def create_barcode(product_code):
+    upc = barcode.get_barcode_class("upca")
+
+    upc_obj = upc(product_code, writer=ImageWriter())
+    upc_obj.save("barcodes/" + product_code)
 
 
 def create_price_list(products):
@@ -39,5 +48,9 @@ def create_price_list(products):
 
 
 products = read_csv()
+
+for product in products:
+    if len(product[2]) == 12:
+        create_barcode(product[2].strip())
 
 create_price_list(products)
