@@ -35,6 +35,9 @@ def read_csv():
 
 
 def create_barcode(product_code):
+    if len(product_code) != 11:
+        product_code = "00000000000"
+
     upc = barcode.get_barcode_class("upca")
     upc_obj = upc(product_code, writer=ImageWriter())
 
@@ -79,43 +82,63 @@ def create_barcode_list(products):
     products.sort(key=lambda x: x.supplier)
 
     prev_supplier = ""
-    j = 0
+    vertical_page_index = 0
+    supplier_product_index = 0
 
-    for i in range(len(products)):
+    for product_index in range(len(products)):
 
-        product = products[i]
+        product = products[product_index]
 
         if product.supplier != prev_supplier:
             prev_supplier = product.supplier
-            j = 0
+            vertical_page_index = 0
+            supplier_product_index = 0
 
-            if i != 0:
+            if product_index != 0:
                 c.showPage()
 
             c.drawString(100, 750, "Supplier: " + product.supplier)
 
-        if j >= product_per_page:
-            j = 0
+        if vertical_page_index >= product_per_page:
+            vertical_page_index = 0
             c.showPage()
 
-        barcode = "00000000000"
-        if len(product.barcode) == 11:
-            barcode = product.barcode
+        barcode = product.barcode
+        if barcode == "":
+            barcode = "00000000000"
 
         create_barcode(barcode)
+
+        curr_column = supplier_product_index % 2
+        vertical_displacement = 70 * vertical_page_index
+        column_displacement = 250 * curr_column
+
         c.drawImage(
             "barcodes/" + barcode + ".png",
-            100,
-            700 - 70 * j,
+            100 + column_displacement,
+            700 - vertical_displacement,
             width=200,
             height=40,
         )
-        c.setFontSize(9)
-        c.drawString(100, 740 - 70 * j, product.name)
-        c.setFontSize(12)
-        c.drawString(170, 690 - 70 * j, barcode)
 
-        j += 1
+        c.setFontSize(9)
+        c.drawCentredString(
+            200 + column_displacement,
+            740 - vertical_displacement,
+            product.name,
+        )
+
+        c.setFontSize(12)
+        c.drawCentredString(
+            200 + column_displacement,
+            690 - vertical_displacement,
+            barcode,
+        )
+
+        if curr_column == 1:
+            vertical_page_index += 1
+
+        supplier_product_index += 1
 
     c.save()
 
