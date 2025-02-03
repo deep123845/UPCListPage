@@ -77,25 +77,18 @@ def create_barcode_list(products):
             if i != 0:
                 c.showPage()
 
+        barcode = "00000000000"
         if len(product.barcode) == 11:
-            create_barcode(product.barcode)
-            c.drawImage(
-                "barcodes/" + product.barcode + ".png",
-                100,
-                710 - 70 * j,
-                width=200,
-                height=40,
-            )
-        else:
-            # using an empty barcode for now to see how it looks
-            create_barcode("00000000000")
-            c.drawImage(
-                "barcodes/" + "00000000000" + ".png",
-                100,
-                720 - 70 * j,
-                width=200,
-                height=30,
-            )
+            barcode = product.barcode
+
+        create_barcode(barcode)
+        c.drawImage(
+            "barcodes/" + barcode + ".png",
+            100,
+            710 - 70 * j,
+            width=200,
+            height=40,
+        )
 
         c.drawString(100, 750 - 70 * j, product.name)
         c.drawString(170, 700 - 70 * j, product.barcode)
