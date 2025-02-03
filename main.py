@@ -75,13 +75,28 @@ def create_barcode_list(products):
 
     product_per_page = 10
 
-    for i in range(len(products)):
-        product = products[i]
-        j = i % product_per_page
+    products.sort(key=lambda x: x.name)
+    products.sort(key=lambda x: x.supplier)
 
-        if j == 0:
+    prev_supplier = ""
+    j = 0
+
+    for i in range(len(products)):
+
+        product = products[i]
+
+        if product.supplier != prev_supplier:
+            prev_supplier = product.supplier
+            j = 0
+
             if i != 0:
                 c.showPage()
+
+            c.drawString(100, 750, "Supplier: " + product.supplier)
+
+        if j >= product_per_page:
+            j = 0
+            c.showPage()
 
         barcode = "00000000000"
         if len(product.barcode) == 11:
@@ -91,13 +106,16 @@ def create_barcode_list(products):
         c.drawImage(
             "barcodes/" + barcode + ".png",
             100,
-            710 - 70 * j,
+            700 - 70 * j,
             width=200,
             height=40,
         )
+        c.setFontSize(9)
+        c.drawString(100, 740 - 70 * j, product.name)
+        c.setFontSize(12)
+        c.drawString(170, 690 - 70 * j, barcode)
 
-        c.drawString(100, 750 - 70 * j, product.name)
-        c.drawString(170, 700 - 70 * j, barcode)
+        j += 1
 
     c.save()
 
