@@ -5,13 +5,23 @@ import barcode
 from barcode.writer import ImageWriter
 
 
+class Product:
+    def __init__(self, name, supplier, pack, price, barcode):
+        self.name = name
+        self.supplier = supplier
+        self.pack = pack
+        self.price = price
+        self.barcode = barcode
+
+
 def read_csv():
     products = []
 
     with open("data.csv", "r") as file:
         reader = csv.reader(file)
         for row in reader:
-            products.append([row[1], row[9], row[11].strip()])
+            product = Product(row[1], row[2], row[4], row[9], row[11])
+            products.append(product)
 
     products.pop(0)
 
@@ -48,8 +58,8 @@ def create_price_list(products):
             c.drawString(100, 750, "Product Name")
             c.drawString(500, 750, "Price")
 
-        c.drawString(100, 730 - 10 * j, product[0])
-        c.drawString(500, 730 - 10 * j, product[1])
+        c.drawString(100, 730 - 10 * j, product.name)
+        c.drawString(500, 730 - 10 * j, product.price)
 
     c.save()
 
@@ -67,10 +77,10 @@ def create_barcode_list(products):
             if i != 0:
                 c.showPage()
 
-        if len(product[2]) == 11:
-            create_barcode(product[2])
+        if len(product.barcode) == 11:
+            create_barcode(product.barcode)
             c.drawImage(
-                "barcodes/" + product[2] + ".png",
+                "barcodes/" + product.barcode + ".png",
                 100,
                 710 - 70 * j,
                 width=200,
@@ -87,8 +97,8 @@ def create_barcode_list(products):
                 height=30,
             )
 
-        c.drawString(100, 750 - 70 * j, product[0])
-        c.drawString(170, 700 - 70 * j, product[2])
+        c.drawString(100, 750 - 70 * j, product.name)
+        c.drawString(170, 700 - 70 * j, product.barcode)
 
     c.save()
 
