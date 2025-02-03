@@ -20,7 +20,13 @@ def read_csv():
     with open("data.csv", "r") as file:
         reader = csv.reader(file)
         for row in reader:
-            product = Product(row[1], row[2], row[4], row[9], row[11])
+            product = Product(
+                row[1].strip(),
+                row[2].strip(),
+                row[4].strip(),
+                row[9].strip(),
+                row[11].strip(),
+            )
             products.append(product)
 
     products.pop(0)
@@ -91,7 +97,7 @@ def create_barcode_list(products):
         )
 
         c.drawString(100, 750 - 70 * j, product.name)
-        c.drawString(170, 700 - 70 * j, product.barcode)
+        c.drawString(170, 700 - 70 * j, barcode)
 
     c.save()
 
