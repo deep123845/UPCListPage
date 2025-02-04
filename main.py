@@ -35,11 +35,11 @@ def read_csv():
 
 
 def create_barcode(product_code):
-    if len(product_code) != 11:
-        product_code = "00000000000"
+    if len(product_code) != 12:
+        product_code = "000000000000"
 
     upc = barcode.get_barcode_class("upca")
-    upc_obj = upc(product_code, writer=ImageWriter())
+    upc_obj = upc(product_code[0:11], writer=ImageWriter())
 
     options = {
         "module_width": 0.4,
@@ -76,7 +76,7 @@ def create_price_list(products):
 def create_barcode_list(products):
     c = canvas.Canvas("Barcode List.pdf", pagesize=letter)
 
-    product_per_page = 10
+    product_per_column = 10
 
     products.sort(key=lambda x: x.name)
     products.sort(key=lambda x: x.supplier)
@@ -99,13 +99,13 @@ def create_barcode_list(products):
 
             c.drawString(100, 750, "Supplier: " + product.supplier)
 
-        if vertical_page_index >= product_per_page:
+        if vertical_page_index >= product_per_column:
             vertical_page_index = 0
             c.showPage()
 
         barcode = product.barcode
         if barcode == "":
-            barcode = "00000000000"
+            barcode = "000000000000"
 
         create_barcode(barcode)
 
