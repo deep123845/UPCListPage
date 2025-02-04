@@ -6,10 +6,9 @@ from barcode.writer import ImageWriter
 
 
 class Product:
-    def __init__(self, name, supplier, pack, price, barcode):
+    def __init__(self, name, supplier, price, barcode):
         self.name = name
         self.supplier = supplier
-        self.pack = pack
         self.price = price
         self.barcode = barcode
 
@@ -23,7 +22,6 @@ def read_csv():
             product = Product(
                 row[1].strip(),
                 row[2].strip(),
-                row[4].strip(),
                 row[9].strip(),
                 row[11].strip(),
             )
