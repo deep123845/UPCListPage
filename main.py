@@ -1,6 +1,7 @@
 import csv
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
 import barcode
 from barcode.writer import ImageWriter
 
@@ -141,7 +142,54 @@ def create_barcode_list(products):
     c.save()
 
 
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+
+
+def create_price_tags(products):
+    c = canvas.Canvas("Price Tags.pdf", pagesize=letter)
+    c.setPageRotation(90)
+
+    products.sort(key=lambda x: x.name)
+    products.sort(key=lambda x: x.supplier)
+
+    margin = 0.5 * inch
+    tag_width = 2.4 * inch
+    tag_height = 1 * inch
+    x = margin
+    y = margin
+
+    for product in products:
+        name = product.name
+        price = product.price
+
+        c.rect(x, y, tag_width, tag_height)
+        c.rect(x, y + tag_height, tag_width, tag_height)
+
+        if len(name) > 30:
+            name = name[:30]
+        c.setFont("Helvetica-Bold", 8)
+        c.drawCentredString(x + (tag_width / 2), y + tag_height - 0.2 * inch, name)
+
+        c.setFont("Helvetica-Bold", 40)
+        c.drawCentredString(x + (tag_width / 2), y + 0.2 * inch, price)
+
+        x += tag_width
+        if x + tag_width + margin > letter[1]:
+            x = margin
+            y += 2 * tag_height
+
+        if y + 2 * tag_height + margin > letter[0]:
+            c.showPage()
+            y = margin
+            x = margin
+
+    c.save()
+
+
 products = read_csv()
 
 create_price_list(products)
 create_barcode_list(products)
+create_price_tags(products)
