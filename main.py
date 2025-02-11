@@ -34,11 +34,17 @@ def read_csv():
 
 
 def create_barcode(product_code):
-    if len(product_code) != 12:
+
+    if len(product_code) < 12 or len(product_code) > 13:
         product_code = "000000000000"
 
-    upc = barcode.get_barcode_class("upca")
-    upc_obj = upc(product_code[0:11], writer=ImageWriter())
+    barcode_class = "upca"
+
+    if len(product_code) == 13:
+        barcode_class = "ean13"
+
+    bar = barcode.get_barcode_class(barcode_class)
+    barcode_obj = bar(product_code, writer=ImageWriter())
 
     options = {
         "module_width": 0.4,
@@ -47,7 +53,7 @@ def create_barcode(product_code):
         "quiet_zone": 0,
     }
 
-    upc_obj.save("barcodes/" + product_code, options)
+    barcode_obj.save("barcodes/" + product_code, options)
 
 
 def create_price_list(products):
