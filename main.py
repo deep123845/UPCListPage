@@ -160,9 +160,9 @@ def create_price_tags(products):
     products.sort(key=lambda x: x.name)
     products.sort(key=lambda x: x.supplier)
 
-    margin = 0.5 * inch
-    tag_width = 2.4 * inch
-    tag_height = 1 * inch
+    margin = 0.2 * inch
+    tag_width = 2.6 * inch
+    tag_height = 1.1 * inch
     x = margin
     y = margin
 
